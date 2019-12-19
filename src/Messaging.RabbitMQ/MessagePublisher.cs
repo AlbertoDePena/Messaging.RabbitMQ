@@ -7,6 +7,9 @@ using RabbitMQ.Client;
 
 namespace Numaka.Messaging.RabbitMQ
 {
+    /// <summary>
+    /// Message Publisher
+    /// </summary>
     public class MessagePublisher : MessagingBase, IMessagePublisher
     {
         private readonly string Host;
@@ -19,6 +22,14 @@ namespace Numaka.Messaging.RabbitMQ
 
         private readonly string ExchangeType;
 
+        /// <summary>
+        /// Message Publisher constructor
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <param name="exchange"></param>
+        /// <param name="exchangeType"></param>
         public MessagePublisher(string host, string user, string password, string exchange, string exchangeType)
         {
             Host = string.IsNullOrWhiteSpace(host) ?
@@ -35,6 +46,7 @@ namespace Numaka.Messaging.RabbitMQ
             ValidateExchangeType(ExchangeType);
         }
 
+        /// <inheritdoc />
         public void PublishMessage(NewMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));

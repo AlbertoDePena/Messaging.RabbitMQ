@@ -8,6 +8,9 @@ using RabbitMQ.Client.Events;
 
 namespace Numaka.Messaging.RabbitMQ
 {
+    /// <summary>
+    /// Message Handler
+    /// </summary>
     public class MessageHandler : MessagingBase, IMessageHandler
     {
         private readonly string Host;
@@ -36,6 +39,16 @@ namespace Numaka.Messaging.RabbitMQ
 
         private bool _disposed;
 
+        /// <summary>
+        /// Message Handler constructor
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <param name="exchange"></param>
+        /// <param name="exchangeType"></param>
+        /// <param name="queue"></param>
+        /// <param name="routingKey"></param>
         public MessageHandler(string host, string user, string password, string exchange, string exchangeType, string queue, string routingKey = "")
         {
             Host = string.IsNullOrWhiteSpace(host) ?
@@ -56,6 +69,7 @@ namespace Numaka.Messaging.RabbitMQ
             ValidateExchangeType(ExchangeType);
         }
 
+        /// <inheritdoc />
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed) return;
@@ -68,12 +82,14 @@ namespace Numaka.Messaging.RabbitMQ
             _disposed = true;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
+        /// <inheritdoc />
         public void Start(Func<Message, Task<bool>> handleMessageAsync)
         {
             _handleMessageAsync = handleMessageAsync ??
@@ -96,6 +112,7 @@ namespace Numaka.Messaging.RabbitMQ
             });
         }
 
+        /// <inheritdoc />
         public void Stop()
         {
             _model.BasicCancel(_consumerTag);
