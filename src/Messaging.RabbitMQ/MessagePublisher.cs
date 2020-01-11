@@ -12,16 +12,6 @@ namespace Numaka.Messaging.RabbitMQ
     /// </summary>
     public class MessagePublisher : MessagingBase, IMessagePublisher
     {
-        private readonly string Host;
-
-        private readonly string User;
-
-        private readonly string Password;
-
-        private readonly string Exchange;
-
-        private readonly string ExchangeType;
-
         /// <summary>
         /// Message Publisher constructor
         /// </summary>
@@ -31,20 +21,7 @@ namespace Numaka.Messaging.RabbitMQ
         /// <param name="exchange"></param>
         /// <param name="exchangeType"></param>
         public MessagePublisher(string host, string user, string password, string exchange, string exchangeType)
-        {
-            Host = string.IsNullOrWhiteSpace(host) ?
-                throw new ArgumentNullException(nameof(host)) : host;
-            User = string.IsNullOrWhiteSpace(user) ?
-                throw new ArgumentNullException(nameof(user)) : user;
-            Password = string.IsNullOrWhiteSpace(password) ?
-                throw new ArgumentNullException(nameof(password)) : password;
-            Exchange = string.IsNullOrWhiteSpace(exchange) ?
-                throw new ArgumentNullException(nameof(exchange)) : exchange;
-            ExchangeType = string.IsNullOrWhiteSpace(exchangeType) ?
-                throw new ArgumentNullException(nameof(exchangeType)) : exchangeType;
-
-            ValidateExchangeType(ExchangeType);
-        }
+            : base(host, user, password, exchange, exchangeType) { }
 
         /// <inheritdoc />
         public void PublishMessage(NewMessage message)
