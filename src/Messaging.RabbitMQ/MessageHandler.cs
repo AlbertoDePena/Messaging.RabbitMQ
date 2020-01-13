@@ -13,16 +13,6 @@ namespace Numaka.Messaging.RabbitMQ
     /// </summary>
     public class MessageHandler : MessagingBase, IMessageHandler
     {
-        private readonly string Host;
-
-        private readonly string User;
-
-        private readonly string Password;
-
-        private readonly string Exchange;
-
-        private readonly string ExchangeType;
-
         private readonly string Queue;
 
         private readonly string RoutingKey;
@@ -50,23 +40,12 @@ namespace Numaka.Messaging.RabbitMQ
         /// <param name="queue"></param>
         /// <param name="routingKey"></param>
         public MessageHandler(string host, string user, string password, string exchange, string exchangeType, string queue, string routingKey = "")
+            : base(host, user, password, exchange, exchangeType)
         {
-            Host = string.IsNullOrWhiteSpace(host) ?
-                throw new ArgumentNullException(nameof(host)) : host;
-            User = string.IsNullOrWhiteSpace(user) ?
-                throw new ArgumentNullException(nameof(user)) : user;
-            Password = string.IsNullOrWhiteSpace(password) ?
-                throw new ArgumentNullException(nameof(password)) : password;
-            Exchange = string.IsNullOrWhiteSpace(exchange) ?
-                throw new ArgumentNullException(nameof(exchange)) : exchange;
-            ExchangeType = string.IsNullOrWhiteSpace(exchangeType) ?
-                throw new ArgumentNullException(nameof(exchangeType)) : exchangeType;
             Queue = string.IsNullOrWhiteSpace(queue) ?
                 throw new ArgumentNullException(nameof(queue)) : queue;
 
             RoutingKey = routingKey ?? string.Empty;
-
-            ValidateExchangeType(ExchangeType);
         }
 
         /// <inheritdoc />
