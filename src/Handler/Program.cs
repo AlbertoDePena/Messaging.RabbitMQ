@@ -15,7 +15,7 @@ namespace Handler
             {
                 using (var handler = GetMessageHandler())
                 {
-                    handler.Start(HandleMessageAsync);
+                    handler.Handle(HandleMessageAsync);
 
                     Console.WriteLine("Listening...");
                     Console.WriteLine("Press Enter to exit...");

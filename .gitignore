@@ -5,3 +5,5 @@
 **/packages
 **/paket-files
 **/.fake
+.fake
+.ionide
