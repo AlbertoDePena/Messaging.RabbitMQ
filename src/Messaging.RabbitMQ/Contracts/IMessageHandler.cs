@@ -13,11 +13,6 @@ namespace Numaka.Messaging.RabbitMQ.Contracts
         /// Start handling messages
         /// </summary>
         /// <param name="handleMessageAsync"></param>
-        void Start(Func<Message, Task<bool>> handleMessageAsync);
-
-        /// <summary>
-        /// Stop handling messages
-        /// </summary>
-        void Stop();
+        void Handle(Func<Message, Task<bool>> handleMessageAsync);
     }
 }

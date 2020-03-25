@@ -55,7 +55,9 @@ namespace Numaka.Messaging.RabbitMQ
 
             if (disposing)
             {
-                Stop();
+                _model.BasicCancel(_consumerTag);
+                _model.Close(200, "Closing connection...");
+                _connection.Close();
             }
 
             _disposed = true;
@@ -69,7 +71,7 @@ namespace Numaka.Messaging.RabbitMQ
         }
 
         /// <inheritdoc />
-        public void Start(Func<Message, Task<bool>> handleMessageAsync)
+        public void Handle(Func<Message, Task<bool>> handleMessageAsync)
         {
             _handleMessageAsync = handleMessageAsync ??
                 throw new ArgumentNullException(nameof(handleMessageAsync));
@@ -89,14 +91,6 @@ namespace Numaka.Messaging.RabbitMQ
                 _consumer.Received += ConsumerReceivedAsync;
                 _consumerTag = _model.BasicConsume(Queue, autoAck: false, _consumer);
             });
-        }
-
-        /// <inheritdoc />
-        public void Stop()
-        {
-            _model.BasicCancel(_consumerTag);
-            _model.Close(200, "Closing connection...");
-            _connection.Close();
         }
 
         private async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs args)

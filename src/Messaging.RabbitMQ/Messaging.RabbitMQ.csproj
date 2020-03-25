@@ -16,5 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AlbertoDePena/Messaging.RabbitMQ</RepositoryUrl>
   </PropertyGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <PackageReference Include="Polly" Version="7.2.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
+  </ItemGroup>
 </Project>

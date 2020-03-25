@@ -1,5 +1,0 @@
-source https://api.nuget.org/v3/index.json
-
-nuget Newtonsoft.Json 12.0.2
-nuget Polly 7.1.1
-nuget RabbitMQ.Client 5.1.2

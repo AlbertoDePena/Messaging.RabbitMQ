@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Numaka.Messaging.RabbitMQ.Contracts;
 using Numaka.Messaging.RabbitMQ.Models;
@@ -28,6 +29,21 @@ namespace Numaka.Messaging.RabbitMQ
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
 
+            Publish(new NewMessage[] { message });
+        }
+
+        /// <inheritdoc />
+        public void PublishMessages(IEnumerable<NewMessage> messages)
+        {
+            if (messages == null) throw new ArgumentNullException(nameof(messages));
+
+            if (messages.Count() == 0) throw new InvalidOperationException("No messages to publish");
+
+            Publish(messages);
+        }
+
+        private void Publish(IEnumerable<NewMessage> messages)
+        {
             Execute(() =>
             {
                 var factory = new ConnectionFactory() { HostName = Host, UserName = User, Password = Password };
@@ -37,11 +53,14 @@ namespace Numaka.Messaging.RabbitMQ
                 {
                     model.ExchangeDeclare(Exchange, type: ExchangeType, durable: true, autoDelete: false);
 
-                    var body = Encoding.UTF8.GetBytes(message.Data);
-                    var properties = model.CreateBasicProperties();
-                    
-                    properties.Headers = new Dictionary<string, object> { { MessageTypeHeader, message.Type } };
-                    model.BasicPublish(Exchange, message.RoutingKey, properties, body);
+                    foreach (var message in messages)
+                    {
+                        var body = Encoding.UTF8.GetBytes(message.Data);
+                        var properties = model.CreateBasicProperties();
+
+                        properties.Headers = new Dictionary<string, object> { { MessageTypeHeader, message.Type } };
+                        model.BasicPublish(Exchange, message.RoutingKey, properties, body);
+                    }
                 }
             });
         }
