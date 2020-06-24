@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Numaka.Messaging.RabbitMQ.Contracts;
-using Numaka.Messaging.RabbitMQ.Models;
+using Numaka.RabbitMQ.Infrastructure.Models;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace Numaka.Messaging.RabbitMQ
+namespace Numaka.RabbitMQ.Infrastructure
 {
     /// <summary>
     /// Message Handler
@@ -57,6 +56,7 @@ namespace Numaka.Messaging.RabbitMQ
             {
                 _model.BasicCancel(_consumerTag);
                 _model.Close(200, "Closing connection...");
+                _consumer.Received -= ConsumerReceivedAsync;
                 _connection.Close();
             }
 
@@ -97,9 +97,9 @@ namespace Numaka.Messaging.RabbitMQ
         {
             var type = string.Empty;
 
-            if (args.BasicProperties.Headers.ContainsKey(MessageTypeHeader))
+            if (args.BasicProperties.Headers.ContainsKey(MessageType))
             {
-                type = Encoding.UTF8.GetString((byte[])args.BasicProperties.Headers[MessageTypeHeader]);
+                type = Encoding.UTF8.GetString((byte[])args.BasicProperties.Headers[MessageType]);
             }
 
             var data = Encoding.UTF8.GetString(args.Body);

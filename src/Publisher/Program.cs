@@ -1,7 +1,6 @@
 ﻿using System;
-using Numaka.Messaging.RabbitMQ;
-using Numaka.Messaging.RabbitMQ.Contracts;
-using Numaka.Messaging.RabbitMQ.Models;
+using Numaka.RabbitMQ.Infrastructure;
+using Numaka.RabbitMQ.Infrastructure.Models;
 using Newtonsoft.Json;
 
 namespace Publisher

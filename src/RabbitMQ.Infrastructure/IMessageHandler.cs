@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Numaka.Messaging.RabbitMQ.Models;
+using Numaka.RabbitMQ.Infrastructure.Models;
 
-namespace Numaka.Messaging.RabbitMQ.Contracts
+namespace Numaka.RabbitMQ.Infrastructure
 {
     /// <summary>
     /// Message Handler Interface

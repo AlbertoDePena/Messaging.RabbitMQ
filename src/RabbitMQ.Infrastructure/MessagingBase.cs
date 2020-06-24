@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Polly;
 
-namespace Numaka.Messaging.RabbitMQ
+namespace Numaka.RabbitMQ.Infrastructure
 {
     /// <summary>
     /// Messaging Base
@@ -10,9 +9,9 @@ namespace Numaka.Messaging.RabbitMQ
     public class MessagingBase
     {
         /// <summary>
-        /// Message type header
+        /// Message type
         /// </summary>
-        public const string MessageTypeHeader = "Messaging.Core.MessageTypeHeader";
+        public const string MessageType = "Numaka.RabbitMQ.Infrastructure.MessageType";
 
         /// <summary>
         /// Supported exchange types
@@ -57,12 +56,16 @@ namespace Numaka.Messaging.RabbitMQ
         {
             Host = string.IsNullOrWhiteSpace(host) ?
                 throw new ArgumentNullException(nameof(host)) : host;
+
             User = string.IsNullOrWhiteSpace(user) ?
                 throw new ArgumentNullException(nameof(user)) : user;
+
             Password = string.IsNullOrWhiteSpace(password) ?
                 throw new ArgumentNullException(nameof(password)) : password;
+
             Exchange = string.IsNullOrWhiteSpace(exchange) ?
                 throw new ArgumentNullException(nameof(exchange)) : exchange;
+                
             ExchangeType = string.IsNullOrWhiteSpace(exchangeType) ?
                 throw new ArgumentNullException(nameof(exchangeType)) : exchangeType;
 
@@ -75,10 +78,10 @@ namespace Numaka.Messaging.RabbitMQ
         /// Retry 9 times waiting 5 seconds in between.
         /// </summary>
         /// <param name="action"></param>
-        public void Execute(Action action) =>
-            Policy
-            .Handle<Exception>()
-            .WaitAndRetry(9, _ => TimeSpan.FromSeconds(5), (ex, ts) => Console.WriteLine($"Error connecting to RabbitMQ. Retrying in 5 sec.\n\n{ex}\n"))
-            .Execute(action);
+        public void Execute(Action action) => action();
+            // Policy
+            // .Handle<Exception>()
+            // .WaitAndRetry(9, _ => TimeSpan.FromSeconds(5), (ex, ts) => Console.WriteLine($"Error connecting to RabbitMQ. Retrying in 5 sec.\n\n{ex}\n"))
+            // .Execute(action);
     }
 }

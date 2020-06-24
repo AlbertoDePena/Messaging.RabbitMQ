@@ -1,4 +1,4 @@
-namespace Numaka.Messaging.RabbitMQ.Models
+namespace Numaka.RabbitMQ.Infrastructure.Models
 {
     /// <summary>
     /// New Message

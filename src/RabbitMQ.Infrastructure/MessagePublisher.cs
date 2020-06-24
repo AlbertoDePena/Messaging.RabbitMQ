@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Numaka.Messaging.RabbitMQ.Contracts;
-using Numaka.Messaging.RabbitMQ.Models;
+using Numaka.RabbitMQ.Infrastructure.Models;
 using RabbitMQ.Client;
 
-namespace Numaka.Messaging.RabbitMQ
+namespace Numaka.RabbitMQ.Infrastructure
 {
     /// <summary>
     /// Message Publisher
@@ -27,7 +26,8 @@ namespace Numaka.Messaging.RabbitMQ
         /// <inheritdoc />
         public void PublishMessage(NewMessage message)
         {
-            if (message == null) throw new ArgumentNullException(nameof(message));
+            if (message == null) 
+                throw new ArgumentNullException(nameof(message));
 
             Publish(new NewMessage[] { message });
         }
@@ -35,9 +35,11 @@ namespace Numaka.Messaging.RabbitMQ
         /// <inheritdoc />
         public void PublishMessages(IEnumerable<NewMessage> messages)
         {
-            if (messages == null) throw new ArgumentNullException(nameof(messages));
+            if (messages == null) 
+                throw new ArgumentNullException(nameof(messages));
 
-            if (messages.Count() == 0) throw new InvalidOperationException("No messages to publish");
+            if (messages.Count() == 0) 
+                throw new InvalidOperationException("No messages to publish");
 
             Publish(messages);
         }
@@ -58,7 +60,7 @@ namespace Numaka.Messaging.RabbitMQ
                         var body = Encoding.UTF8.GetBytes(message.Data);
                         var properties = model.CreateBasicProperties();
 
-                        properties.Headers = new Dictionary<string, object> { { MessageTypeHeader, message.Type } };
+                        properties.Headers = new Dictionary<string, object> { { MessageType, message.Type } };
                         model.BasicPublish(Exchange, message.RoutingKey, properties, body);
                     }
                 }
