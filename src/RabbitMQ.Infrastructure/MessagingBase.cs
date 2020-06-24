@@ -65,23 +65,12 @@ namespace Numaka.RabbitMQ.Infrastructure
 
             Exchange = string.IsNullOrWhiteSpace(exchange) ?
                 throw new ArgumentNullException(nameof(exchange)) : exchange;
-                
+
             ExchangeType = string.IsNullOrWhiteSpace(exchangeType) ?
                 throw new ArgumentNullException(nameof(exchangeType)) : exchangeType;
 
             if (!SupportedExchangeTypes.Contains(ExchangeType)) 
                 throw new InvalidOperationException("Exchange Type must be direct, fanout or topic");
         }
-
-        /// <summary>
-        /// Execute an action with a wait and retry policy.
-        /// Retry 9 times waiting 5 seconds in between.
-        /// </summary>
-        /// <param name="action"></param>
-        public void Execute(Action action) => action();
-            // Policy
-            // .Handle<Exception>()
-            // .WaitAndRetry(9, _ => TimeSpan.FromSeconds(5), (ex, ts) => Console.WriteLine($"Error connecting to RabbitMQ. Retrying in 5 sec.\n\n{ex}\n"))
-            // .Execute(action);
     }
 }

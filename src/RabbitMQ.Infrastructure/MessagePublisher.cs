@@ -26,7 +26,7 @@ namespace Numaka.RabbitMQ.Infrastructure
         /// <inheritdoc />
         public void PublishMessage(NewMessage message)
         {
-            if (message == null) 
+            if (message == null)
                 throw new ArgumentNullException(nameof(message));
 
             Publish(new NewMessage[] { message });
@@ -35,10 +35,10 @@ namespace Numaka.RabbitMQ.Infrastructure
         /// <inheritdoc />
         public void PublishMessages(IEnumerable<NewMessage> messages)
         {
-            if (messages == null) 
+            if (messages == null)
                 throw new ArgumentNullException(nameof(messages));
 
-            if (messages.Count() == 0) 
+            if (messages.Count() == 0)
                 throw new InvalidOperationException("No messages to publish");
 
             Publish(messages);
@@ -46,25 +46,22 @@ namespace Numaka.RabbitMQ.Infrastructure
 
         private void Publish(IEnumerable<NewMessage> messages)
         {
-            Execute(() =>
+            var factory = new ConnectionFactory() { HostName = Host, UserName = User, Password = Password };
+
+            using (var connection = factory.CreateConnection())
+            using (var model = connection.CreateModel())
             {
-                var factory = new ConnectionFactory() { HostName = Host, UserName = User, Password = Password };
+                model.ExchangeDeclare(Exchange, type: ExchangeType, durable: true, autoDelete: false);
 
-                using (var connection = factory.CreateConnection())
-                using (var model = connection.CreateModel())
+                foreach (var message in messages)
                 {
-                    model.ExchangeDeclare(Exchange, type: ExchangeType, durable: true, autoDelete: false);
+                    var body = Encoding.UTF8.GetBytes(message.Data);
+                    var properties = model.CreateBasicProperties();
 
-                    foreach (var message in messages)
-                    {
-                        var body = Encoding.UTF8.GetBytes(message.Data);
-                        var properties = model.CreateBasicProperties();
-
-                        properties.Headers = new Dictionary<string, object> { { MessageType, message.Type } };
-                        model.BasicPublish(Exchange, message.RoutingKey, properties, body);
-                    }
+                    properties.Headers = new Dictionary<string, object> { { MessageType, message.Type } };
+                    model.BasicPublish(Exchange, message.RoutingKey, properties, body);
                 }
-            });
+            }
         }
     }
 }

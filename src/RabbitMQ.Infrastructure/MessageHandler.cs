@@ -76,21 +76,18 @@ namespace Numaka.RabbitMQ.Infrastructure
             _handleMessageAsync = handleMessageAsync ??
                 throw new ArgumentNullException(nameof(handleMessageAsync));
 
-            Execute(() =>
-            {
-                var factory = new ConnectionFactory() { HostName = Host, UserName = User, Password = Password, DispatchConsumersAsync = true };
+            var factory = new ConnectionFactory() { HostName = Host, UserName = User, Password = Password, DispatchConsumersAsync = true };
 
-                _connection = factory.CreateConnection();
+            _connection = factory.CreateConnection();
 
-                _model = _connection.CreateModel();
-                _model.ExchangeDeclare(Exchange, type: ExchangeType, durable: true, autoDelete: false);
-                _model.QueueDeclare(Queue, durable: true, autoDelete: false, exclusive: false);
-                _model.QueueBind(Queue, Exchange, RoutingKey);
+            _model = _connection.CreateModel();
+            _model.ExchangeDeclare(Exchange, type: ExchangeType, durable: true, autoDelete: false);
+            _model.QueueDeclare(Queue, durable: true, autoDelete: false, exclusive: false);
+            _model.QueueBind(Queue, Exchange, RoutingKey);
 
-                _consumer = new AsyncEventingBasicConsumer(_model);
-                _consumer.Received += ConsumerReceivedAsync;
-                _consumerTag = _model.BasicConsume(Queue, autoAck: false, _consumer);
-            });
+            _consumer = new AsyncEventingBasicConsumer(_model);
+            _consumer.Received += ConsumerReceivedAsync;
+            _consumerTag = _model.BasicConsume(Queue, autoAck: false, _consumer);
         }
 
         private async Task ConsumerReceivedAsync(object sender, BasicDeliverEventArgs args)
